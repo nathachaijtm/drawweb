@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Drawingอิหยังว่ะ</title>
+    <link rel="stylesheet" href="main.css">
+</head>
+<body>
+
+    <div class="input-container">
+        <div class="input-box">
+            <input type="text" placeholder="Send me letters!">
+            🎵
+        </div>
+        <div class="input-box">
+            <input type="text" placeholder="Send anonymously ✍️🤫">
+        </div>
+    </div>
+
+    <div class="toolbar">
+        <button onclick="clearCanvas()">↩</button>
+        <input type="range" id="brushSize" min="1" max="10" value="3">
+        <input type="color" id="colorPicker">
+    </div>
+
+    <div class="canvas-container">
+        <canvas id="drawingCanvas"></canvas>
+        <div class="send-button">Send anonymously 🎨🤫</div>
+    </div>
+
+    <script>
+        const canvas = document.getElementById("drawingCanvas");
+        const ctx = canvas.getContext("2d");
+        const brushSize = document.getElementById("brushSize");
+        const colorPicker = document.getElementById("colorPicker");
+
+        canvas.width = canvas.parentElement.clientWidth;
+        canvas.height = canvas.parentElement.clientHeight - 30;
+
+        let drawing = false;
+
+        function getMousePos(event) {
+            const rect = canvas.getBoundingClientRect();
+            return {
+                x: event.clientX ? event.clientX - rect.left : event.touches[0].clientX - rect.left,
+                y: event.clientY ? event.clientY - rect.top : event.touches[0].clientY - rect.top
+            };
+        }
+
+        function draw(x, y) {
+            ctx.lineWidth = brushSize.value;
+            ctx.lineCap = "round";
+            ctx.strokeStyle = colorPicker.value;
+
+            ctx.lineTo(x, y);
+            ctx.stroke();
+            ctx.beginPath();
+            ctx.moveTo(x, y);
+        }
+
+    
+        canvas.addEventListener("mousedown", (event) => {
+            drawing = true;
+            const pos = getMousePos(event);
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
+        });
+        canvas.addEventListener("mousemove", (event) => {
+            if (!drawing) return;
+            const pos = getMousePos(event);
+            draw(pos.x, pos.y);
+        });
+        canvas.addEventListener("mouseup", () => drawing = false);
+        canvas.addEventListener("mouseleave", () => drawing = false);
+
+        
+        canvas.addEventListener("touchstart", (event) => {
+            event.preventDefault();
+            drawing = true;
+            const pos = getMousePos(event);
+            ctx.beginPath();
+            ctx.moveTo(pos.x, pos.y);
+        });
+        canvas.addEventListener("touchmove", (event) => {
+            event.preventDefault();
+            if (!drawing) return;
+            const pos = getMousePos(event);
+            draw(pos.x, pos.y);
+        });
+        canvas.addEventListener("touchend", () => drawing = false);
+
+        function clearCanvas() {
+            ctx.clearRect(0, 0, canvas.width, canvas.height);
+        }
+    </script>
+
+</body>
+</html>
