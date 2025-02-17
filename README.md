@@ -1,1 +1,1 @@
-https://nathachaijtm.github.io/drawweb/main.html
+https://nathachaijtm.github.io/drawweb/draw.html
